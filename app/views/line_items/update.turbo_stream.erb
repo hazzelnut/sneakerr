@@ -1,0 +1,2 @@
+<%= turbo_stream.update(@cart, partial: 'carts/cart') %>
+<%= turbo_stream.update(dom_id(@sneaker, :items_in_cart), partial: 'sneakers/count', locals: {sneaker: @sneaker}) %>

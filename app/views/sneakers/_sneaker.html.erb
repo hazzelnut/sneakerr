@@ -1,0 +1,25 @@
+<div id="<%= dom_id sneaker %>" class="border border-gray-300 rounded-lg relative">
+  <%= turbo_frame_tag dom_id(sneaker, :items_in_cart) do %>
+    <%= render partial: 'count', locals: {sneaker: sneaker} %>
+  <% end %>
+  <%= link_to sneaker do %>
+    <div class="p-2 rounded-t-lg bg-white">
+      <%= image_tag sneaker.image, class: 'rounded mx-auto' %>
+    </div>
+    <div class="p-2">
+      <div class="flex justify-between">
+        <h2 class="font-bold"><%= sneaker.name %></h2>
+        <span class="font-bold text-green-500"><%= number_to_currency(sneaker.price) %></span>
+      </div>
+      <div class="text-gray-500 text-xs">
+        <%= sneaker.brand %>
+      </div>
+      <p class="text-gray-700 text-sm"><%= sneaker.description %></p>
+    </div>
+  <% end %>
+  <div class="p-2 pt-8">
+  <%= button_to add_to_cart_path(sneaker), method: :post, class: 'btn-primary w-full' do %>
+    Add to Cart
+  <% end %>
+  </div>
+</div>

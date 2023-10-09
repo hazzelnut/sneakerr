@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html class="h-full">
+  <head>
+    <title>Sneakerr</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload" %>
+
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body class="h-full antialiased container mx-auto">
+    <header class="sticky z-10 py-5 border-b border-gray-100 flex justify-between">
+      <h1 class="font-black text-3xl"><%= link_to 'Sneakerr', root_path, class: 'hover:text-blue-500' %></h1>
+      <div class="flex text-sm gap-5">
+        <% if signed_in? %>
+          <%= render 'carts/cart' %>
+          <%= button_to 'Sign out', sign_out_path, method: :delete, class: 'hover:text-blue-500'%>
+        <% else %>
+          <%= link_to 'Sign Up', sign_up_path, class: 'hover:text-blue-500' %>
+          <%= link_to 'Sign In', sign_in_path, class: 'hover:text-blue-500' %>
+        <% end %>
+      </div>
+    </header>
+    <main class="py-5">
+      <%= yield %>
+    </main>
+  </body>
+</html>
