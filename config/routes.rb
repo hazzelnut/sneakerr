@@ -1,6 +1,4 @@
 Rails.application.routes.draw do
-  get 'carts/line_items'
-
   # sneakers/1/reviews/1 type urls
   resources :sneakers do
     resources :reviews

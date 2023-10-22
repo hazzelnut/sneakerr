@@ -1,9 +1,10 @@
 class ReviewsController < AuthedController
+  before_action :set_sneaker
   before_action :set_review, only: %i[ show edit update destroy ]
 
   # GET /reviews or /reviews.json
   def index
-    @reviews = Review.all
+    @reviews = @sneaker.reviews.order(:created_at)
   end
 
   # GET /reviews/1 or /reviews/1.json
@@ -21,29 +22,20 @@ class ReviewsController < AuthedController
 
   # POST /reviews or /reviews.json
   def create
-    @review = Review.new(review_params)
+    @review = @sneaker.reviews.new(review_params.merge(user_id: current_user.id))
 
     respond_to do |format|
-      if @review.save
-        format.html { redirect_to review_url(@review), notice: "Review was successfully created." }
-        format.json { render :show, status: :created, location: @review }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @review.errors, status: :unprocessable_entity }
-      end
+      @review.save
+      format.turbo_stream
     end
   end
 
   # PATCH/PUT /reviews/1 or /reviews/1.json
   def update
-    respond_to do |format|
-      if @review.update(review_params)
-        format.html { redirect_to review_url(@review), notice: "Review was successfully updated." }
-        format.json { render :show, status: :ok, location: @review }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @review.errors, status: :unprocessable_entity }
-      end
+    if @review.update(review_params)
+      render turbo_stream: turbo_stream.replace(@review, @review)
+    else
+      render :edit, status: :unprocessable_entity
     end
   end
 
@@ -52,12 +44,15 @@ class ReviewsController < AuthedController
     @review.destroy
 
     respond_to do |format|
-      format.html { redirect_to reviews_url, notice: "Review was successfully destroyed." }
-      format.json { head :no_content }
+      format.turbo_stream { render turbo_stream: turbo_stream.remove(@review) }
     end
   end
 
   private
+    def set_sneaker
+      @sneaker = Sneaker.find(params[:sneaker_id])
+    end
+
     # Use callbacks to share common setup or constraints between actions.
     def set_review
       @review = Review.find(params[:id])
